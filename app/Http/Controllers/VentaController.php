@@ -63,7 +63,7 @@ class VentaController extends Controller
                     $viewUrl = route('ventas.show', $row->id);
                     $deleteUrl = route('ventas.destroy', $row->id);
                     $pdfUrl = route('ventas.pdf', $row->id); // Asegúrate de que la ruta esté correcta
-                    return '
+                    return '<a href="'.$viewUrl.'" class="btn btn-info btn-sm">Ver</a>
                             <a href="' . $pdfUrl . '" class="btn btn-success btn-sm" target="_blank">Recibo</a>
                            <form action="' . $deleteUrl . '"  method="POST" style="display:inline; " class="btn-delete">
                             ' . csrf_field() . '

@@ -113,7 +113,7 @@
     // Limpiar la previsualización actual
     previewContainer.innerHTML = '';
 
-    // Validar cantidad de archivos seleccionados
+    // Validar cantidad de archivos seleccionados  
     if (files.length > maxFiles) {
         imagenesError.style.display = 'block';
         imagenesInput.value = ''; // Limpiar la selección de archivos

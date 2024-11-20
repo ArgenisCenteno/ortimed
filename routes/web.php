@@ -70,7 +70,7 @@ Route::post('/registrarApertura/{id}', [CajaController::class, 'registrarApertur
 Route::put('/cierre/{id}', [CajaController::class, 'cerrarCaja'])->name('caja.cierre');
 Route::get('/aperturas', [CajaController::class, 'aperturasIndex'])->name('caja.aperturas');
 Route::get('/cierres', [CajaController::class, 'cierresIndex'])->name('caja.cierres');
-
+Route::get('/pagos/export', [PagoController::class, 'export'])->name('pagos.export');
 /* VENTAS */
 Route::get('/ventas/export', [VentaController::class, 'export'])->name('ventas.export');
 
