@@ -1,8 +1,5 @@
-<div class="container">
-    <!-- Información de la compra -->
-     
+
     <form>
-    <div class="container">
         <div class="row">
             <!-- Vendedor -->
             <div class="col-md-4 mb-3">
@@ -54,7 +51,6 @@
                 </div>
             </div>
         </div>
-    </div>
 </form>
 
 
@@ -124,43 +120,5 @@
         </div>
     </div>
 
-    <div class="card mb-4">
-        <div class="card-header">
-            <h5>Método de Pago</h5>
-        </div>
-        <div class="card-body  table-responsive">
-        <table class="table table-hover">
-            <thead>
-                <tr>
-                    <th>Método</th> 
-                    <th>Banco Origen</th>
-                    <th>Banco Destino</th>
-                    <th>Número de Referencia</th>
-                    <th>Monto BS</th>
-                    <th>Monto USD</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (json_decode($compra->pago->forma_pago) as $pago)
-                    <tr>
-                        <td>{{ $pago->metodo }}</td> 
-                        <td>{{ $pago->banco_origen }}</td>
-                        <td>{{ $pago->banco_destino }}</td>
-                        <td>{{ $pago->numero_referencia }}</td>
-                        @if($pago->metodo == 'Divisa')
-                        <td>{{ number_format(0, 2) }}</td>
-                        @else 
-                        <td>{{ number_format($pago->monto_bs, 2) }}</td>
-                        @endif
-                       @if($pago->metodo != 'Divisa')
-                       <td>{{ number_format(0, 2) }}</td>
-                       @else
-                       <td>{{ number_format($pago->monto_dollar, 2) }}</td>
-                       @endif
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-        </div>
+    
     </div>
-</div>

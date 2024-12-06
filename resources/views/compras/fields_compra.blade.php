@@ -1,76 +1,65 @@
 <form action="{{ route('compras.generarCompra') }}" method="POST">
     @csrf <!-- Agrega el token CSRF para seguridad -->
     <section>
-      
 
-       
-        <div class="text-center mt-4 card pt-2 pb-2 bg-success text-white" style="box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;">
+
+
+        <div class="text-center mt-4 card pt-2 pb-2 bg-success text-white"
+            style="box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;">
             <h3>Total a Pagar: <span id="totalVenta" class="totalVenta">0.00</span> Bs</h3>
 
-         
+
             <input type="hidden" name="productos" id="productosInput">
-         
+
         </div>
-        <hr />
+        
+        <div class=" mb-4">
+            <div class="card  p-4 bg-dark text-white">
+                <h4 class=" mb-3">Empleado: {{ auth()->user()->name }}</h4>
 
+                <!-- Información de tasa de cambio oculta -->
+                <input type="hidden" name="tasa" id="tasa" value="{{ $dollar->valor }}">
+                <input type="hidden" name="id_tasa" value="{{ $dollar->id }}">
 
-        <div class="d-flex flex-column mb-3">
-            <div data-mdb-ripple-init class="btn-group-vertical" role="group" aria-label="Vertical button group">
-
+                <!-- Selección de Caja y Cliente -->
               
 
-                <label data-mdb-ripple-init class="bg-dark w-100 p-4  text-white " for="option1">
-                    <div class="d-flex justify-content-between">
-                    <span><i class="fas fa-dollar-sign"></i> Dollar: </span>
+                <div class="mb-3">
+                    <label for="user_id" class="form-label"> <strong>Proveedor</strong> </label>
+                    <select name="user_id" id="user_id" class="form-select select2">
+                        @foreach($users as $id => $name)
+                            <option value="{{ $id }}">{{ $name }}</option>
+                        @endforeach
+                    </select>
+                </div>
 
-                        <input type="hidden" name="tasa" id="tasa" value="{{$dollar->valor}}">
-                        <input type="hidden" name="id_tasa" value="{{$dollar->id}}">
-                        <span>{{$dollar->valor}}</span>
-                    </div>
-                </label>
-
-                <input type="radio" data-mdb-ripple-init class="btn-check" name="options" id="option2"
-                    autocomplete="off" checked />
-                <label data-mdb-ripple-init class="bg-dark w-100 p-4 mt-3  text-white" for="option2">
-                    <div class="d-flex justify-content-between">
-                        <span><i class="fas fa-user "></i> Empleado </span>
-                        <span>{{auth()->user()->name}}</span>
-                    </div>
-                </label>
-              <label for="Cliente"> <i class="fas fa-user text-success mt-3"></i> Proveedor</label>
-              <select name="user_id" id="user_id" class="form-control select2 mb-2 mt-2" required>
-                <option value="">Seleccione una opción</option>
-                    @foreach($users as $id => $name)
-                        <option value="{{ $id }}">{{ $name }}</option>
-                    @endforeach
-                </select>
-
-
-            </div>
-            <div id="metodosPagoContainer">
-               
-                <div class="row g-3">
-                    <div class="col-md-12">
-                        <label for=""><i class="fas fa-cash-register text-success mt-3"></i> Forma de Pago</label>
+                <!-- Método de Pago y Selección de Mesa -->
+                <div class="row g-3" id="metodosPagoContainer">
+                    <div class="col-12 mb-3">
+                        <label for="metodoPago" class="form-label">
+                          <strong>Forma de Pago</strong>
+                        </label>
                         <select class="form-select" id="metodoPago" name="metodoPago">
                             <option value="Efectivo">Efectivo</option>
                             <option value="Transferencia">Transferencia</option>
                             <option value="Pago Movil">Pago Móvil</option>
                             <option value="Divisa">Divisa</option>
                             <option value="Punto de Venta">Punto de Venta</option>
-                            <option value="A credito">A credito</option>
+                            <option value="A Credito">Credito</option>
                         </select>
                     </div>
-                   
+
+                  
                 </div>
             </div>
         </div>
+
         <div id="metodosPagoList"></div>
 
         <div class="productoCarrito" id="productoCarrito">
 
-</div>
-        <button type="submit" id="submitBtn" class="btn btn-primary w-100" >Completar</button>
+        </div>
+        <button type="submit" id="submitBtn" class="btn btn-success w-100">Generar venta</button>
         </div>
 
     </section>

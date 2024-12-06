@@ -16,7 +16,9 @@ class Venta extends Model
         'status',
         'porcentaje_descuento',
         'pago_id',
-        'mesa'
+        'mesa',
+        'mesa_id',
+        'tipo_servicio',
     ];
 
     public function pago()

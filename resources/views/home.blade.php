@@ -118,12 +118,12 @@
                                                 Ver más <i class="bi bi-link-45deg"></i> </a>
                                         </div> <!--end::Small Box Widget 1-->
                                     </div> <!--end::Col-->
-                                   
+
                                     <div class="col-lg-3 col-6"> <!--begin::Small Box Widget 3-->
-                                        <div class="small-box  bg-danger-app">
+                                        <div class="small-box  bg-sky-app">
                                             <div class="inner">
-                                                <h3>{{$usuarios}}</h3>
-                                                <p>Usuarios Registrados</p>
+                                                <h3>{{$compras}}</h3>
+                                                <p>Compras</p>
                                             </div> <svg class="small-box-icon" fill="currentColor" viewBox="0 0 24 24"
                                                 xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                                 <path
@@ -137,8 +137,8 @@
                                     <div class="col-lg-3 col-6"> <!--begin::Small Box Widget 4-->
                                         <div class="small-box bg-success-app">
                                             <div class="inner">
-                                                <h3>{{$productos}}</h3>
-                                                <p>Productos</p>
+                                                <h3>{{$deudas}}</h3>
+                                                <p>Deudas</p>
                                             </div> <svg class="small-box-icon" fill="currentColor" viewBox="0 0 24 24"
                                                 xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                                                 <path clip-rule="evenodd" fill-rule="evenodd"
@@ -156,8 +156,8 @@
                                     <div class="col-lg-3 col-6"> <!--begin::Small Box Widget 8-->
                                         <div class="small-box text-bg-primary">
                                             <div class="inner">
-                                                <h3>{{$pagos}}</h3>
-                                                <p>Pagos</p>
+                                                <h3>{{$pendientes}}</h3>
+                                                <p>Cuentas Por Cobrar</p>
                                             </div>
                                             <svg class="small-box-icon" fill="currentColor" viewBox="0 0 24 24"
                                                 xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -171,15 +171,43 @@
                                         </div>
                                     </div> <!--end::Small Box Widget 8-->
                                 </div> <!--end::Row--> <!--begin::Row-->
+
+                                <hr class="custom-hr">
+
+
+
                                 <div class="row">
-                                    
-
-                                   
-
-                                   
-
-                                    
+                                    @foreach($mesas as $mesa)
+                                        <div class="col-lg-3 col-6"> <!--begin::Small Box Widget 4-->
+                                            <div
+                                                class="small-box {{ $mesa->estado === 'Disponible' ? 'bg-success' : 'bg-danger' }}">
+                                                <div class="inner">
+                                                    <h3>{{ $mesa->numero }}</h3>
+                                                    <p>{{ $mesa->estado }}</p>
+                                                </div>
+                                                <div class="icon">
+                                                    <svg class="small-box-icon" fill="currentColor" viewBox="0 0 24 24"
+                                                        xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                                        <path
+                                                            d="M2 10h20v2H2v-2zm0 5h7v5H2v-5zm9 0h11v5H11v-5zM4 6h16v2H4V6z" />
+                                                    </svg>
+                                                    <svg class="small-box-icon" fill="currentColor" viewBox="0 0 24 24"
+                                                        xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                                        <path
+                                                            d="M3 6h18v12H3zM2 4v16h20V4H2zm10 5h5v1h-5v-1zm0 2h7v1h-7v-1z">
+                                                        </path>
+                                                    </svg>
+                                                    <a href="{{ route('venta.mesaGestion', $mesa->id) }}"
+                                                        class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover text-center w-100">
+                                                        Administrar <i class="bi bi-link-45deg"></i>
+                                                    </a>
+                                                </div>
+                                            </div> <!--end::Small Box Widget 4-->
+                                        </div> <!--end::Col-->
+                                    @endforeach
                                 </div>
+
+
                             </div> <!--end::Col for combined box-->
                         </div> <!--end::Row for combined box-->
                     </div> <!--end::Container-->

@@ -5,6 +5,7 @@
                 <th>#</th>
                 <th>Cliente</th>
                 <th>Empleado</th>
+                <th>Servicio</th>
                 <th> Neto</th>
                 <th> Total</th>
                 <th>Fecha de Venta</th>
@@ -36,6 +37,7 @@
                 { data: 'id', name: 'id' },
                 { data: 'user', name: 'user' },
                 { data: 'vendedor', name: 'vendedor' },
+                { data: 'tipo_servicio', name: 'tipo_servicio' },
                 { data: 'monto_neto', name: 'monto_neto' },
                 { data: 'monto_total', name: 'monto_total' },
                 { data: 'fecha', name: 'fecha' },

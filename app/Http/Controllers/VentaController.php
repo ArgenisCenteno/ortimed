@@ -7,6 +7,7 @@ use App\Models\AperturaCaja;
 use App\Models\Caja;
 use App\Models\CuentaPorCobrar;
 use App\Models\DetalleVenta;
+use App\Models\Mesa;
 use App\Models\Movimiento;
 use App\Models\Pago;
 use App\Models\Producto;
@@ -40,16 +41,30 @@ class VentaController extends Controller
                     return $row->vendedor->name ?? 'S/D';
                 })
                 ->addColumn('monto_neto', function ($row) {
-                   if($row->pago){
-                    return number_format($row->pago->monto_neto, 2);
-                   }else{
-                    $status = $row->status;
-                    $class = $status == 'Pagado' ? 'success' : 'danger'; // Clase basada en el estado
-                    return '<span class="badge bg-' . $class . '">' . $status . '</span>';
-                   }
+                    if ($row->pago) {
+                        return number_format($row->pago->monto_neto, 2);
+                    } else {
+                        $status = $row->status;
+                        $class = $status == 'Pagado' ? 'success' : 'danger'; // Clase basada en el estado
+                        return '<span class="badge bg-' . $class . '">' . $status . '</span>';
+                    }
                 })
                 ->addColumn('monto_total', function ($row) {
                     return number_format($row->monto_total, 2);
+                })
+                ->addColumn('tipo_servicio', function ($row) {
+                    // Devuelve el tipo de servicio de acuerdo al valor almacenado
+                    switch ($row->tipo_servicio) {
+                        case 'comer_aqui':
+                            return 'Comer aquí';
+                        case 'delivery':
+                            return 'Delivery';
+                        case 'para_llevar':
+                            return 'Para llevar';
+                        default:
+                            return 'N/A'; // Si no tiene tipo de servicio o es nulo
+                    }
+
                 })
                 ->addColumn('fecha', function ($row) {
                     return $row->created_at->format('Y-m-d'); // Ajusta el formato de fecha aquí
@@ -63,7 +78,7 @@ class VentaController extends Controller
                     $viewUrl = route('ventas.show', $row->id);
                     $deleteUrl = route('ventas.destroy', $row->id);
                     $pdfUrl = route('ventas.pdf', $row->id); // Asegúrate de que la ruta esté correcta
-                    return '<a href="'.$viewUrl.'" class="btn btn-info btn-sm">Ver</a>
+                    return '<a href="' . $viewUrl . '" class="btn btn-info btn-sm">Ver</a>
                             <a href="' . $pdfUrl . '" class="btn btn-success btn-sm" target="_blank">Recibo</a>
                            <form action="' . $deleteUrl . '"  method="POST" style="display:inline; " class="btn-delete">
                             ' . csrf_field() . '
@@ -120,7 +135,8 @@ class VentaController extends Controller
         $dollar = Tasa::where('name', 'Dollar')->where('status', 'Activo')->first();
         $users = User::pluck('name', 'id');
         $cajas = Caja::all();
-        return view('ventas.vender')->with('cajas', $cajas)->with('dollar', $dollar)->with('users', $users);
+        $mesas = Mesa::where('estado', 'Disponible')->get();
+        return view('ventas.vender')->with('mesas', $mesas)->with('cajas', $cajas)->with('dollar', $dollar)->with('users', $users);
     }
 
     public function datatableProductoVenta(Request $request)
@@ -170,7 +186,7 @@ class VentaController extends Controller
 
     public function generarVenta(Request $request)
     {
-        
+
         if (!$request->caja) {
             Alert::error('¡Error!', 'Debe seleccionar una caja')->showConfirmButton('Aceptar', 'rgba(79, 59, 228, 1)');
             return redirect()->back();
@@ -211,7 +227,7 @@ class VentaController extends Controller
         $deuda = null;
         //registrar pago
 
-        if ($request->metodoPago != 'A credito') {
+        if ($request->metodoPago != 'A credito' && $request->metodoPago != 'Pagar luego') {
             $estatus = 'Pagado';
 
             $pago = new Pago();
@@ -231,10 +247,10 @@ class VentaController extends Controller
             $deuda = new CuentaPorCobrar();
 
             $deuda->user_id = $request->user_id;
-           
+
             $deuda->tipo = "Pago de servicio";
             $deuda->descripcion = "Pago por consumo de comida en establecimiento";
-            
+
             $deuda->monto = $montoTotal;
             $deuda->estado = $estatus;
 
@@ -242,7 +258,11 @@ class VentaController extends Controller
 
         }
 
-
+        if ($request->tipo_servicio == 'comer_aqui') {
+            $mesa = Mesa::find($request->mesa_id);
+            $mesa->estado = 'Ocupada';
+            $mesa->save();
+        }
 
 
 
@@ -252,21 +272,21 @@ class VentaController extends Controller
         $venta->vendedor_id = $userId;
         $venta->monto_total = $montoTotal;
         $venta->status = $estatus;
-        if(!$deuda){
+        $venta->mesa_id = $request->mesa_id;
+        $venta->tipo_servicio = $request->tipo_servicio;
+        if (!$deuda) {
             $venta->pago_id = $pago->id;
-        }else{
+        } else {
             $venta->pago_id = null;
         }
-       
-        $venta->mesa = $request->mesa;
-        $venta->mesa = $request->mesa;
+
         $venta->save();
 
-       if($deuda){
-        $deuda->venta_id = $venta->id;
-        
-        $deuda->save();
-       }
+        if ($deuda) {
+            $deuda->venta_id = $venta->id;
+
+            $deuda->save();
+        }
 
         // Registrar detalles ventas
         foreach ($productos as $producto) {
@@ -290,67 +310,67 @@ class VentaController extends Controller
             }
         }
 
-        if(!$deuda){
-        $recibo = new Recibo();
-        $recibo->tipo = 'Venta';
-        $recibo->monto = $montoTotal;
-        $recibo->estatus = $estatus;
-        $recibo->pago_id = $pago->id;
-        $recibo->user_id = $request->user_id;
-        $recibo->activo = 1;
-        $recibo->creado_id = $userId;
-        $recibo->descuento = $request->descuento;
-        $recibo->save();
+        if (!$deuda) {
+            $recibo = new Recibo();
+            $recibo->tipo = 'Venta';
+            $recibo->monto = $montoTotal;
+            $recibo->estatus = $estatus;
+            $recibo->pago_id = $pago->id;
+            $recibo->user_id = $request->user_id;
+            $recibo->activo = 1;
+            $recibo->creado_id = $userId;
+            $recibo->descuento = $request->descuento;
+            $recibo->save();
 
-        //caja
-      
-        $movimiento = new Movimiento();
+            //caja
 
-        $movimiento->caja_id = $caja->id; // ID de la caja
-        $movimiento->usuario_id = $request->user_id; // ID del usuario que realiza el movimiento
-        $movimiento->tipo = 'entrada'; // Tipo de movimiento
-        $movimiento->descripcion = "Registro de venta"; // Descripción del movimiento
-        $movimiento->apertura_id = $apertura->id;
-        $movimiento->fecha = now(); // Establecer la fecha actual
+            $movimiento = new Movimiento();
 
-        // Verificar la forma de pago y asignar el monto correspondiente
-        if ($request->forma_pago === 'Divisa') {
-            $movimiento->monto_dolares = $montoTotal; // Asignar el monto total en dólares
-            $movimiento->monto_bolivares = 0; // Asegúrate de que el campo en bolívares esté vacío
-          
-            $transaccion = new Transaccion();
-            $transaccion->caja_id = $caja->id;
-            $transaccion->usuario_id = Auth::user()->id;
-            $transaccion->monto_total_bolivares =  0;
-            $transaccion->monto_total_dolares =  $montoTotal;
-            $transaccion->metodo_pago =  $request->metodoPago;
-            $transaccion->moneda =  'Dollar';
-            $transaccion->fecha =  Carbon::now();
-            $transaccion->apertura_id = $apertura->id;
-            $transaccion->save();
-      
-        } else {
-            $movimiento->monto_bolivares = $montoTotal; // Asignar el monto total en bolívares
-            $movimiento->monto_dolares = 0; // Asegúrate de que el campo en dólares esté vacío
-        
-            $transaccion = new Transaccion();
-            $transaccion->caja_id = $caja->id;
-            $transaccion->usuario_id = Auth::user()->id;
-            $transaccion->monto_total_bolivares =  $montoTotal;
-            $transaccion->monto_total_dolares =  0;
-            
-            $transaccion->metodo_pago =  $request->metodoPago;
-            $transaccion->apertura_id = $apertura->id;
-            $transaccion->moneda =  'Bolivar';
-            $transaccion->fecha =  Carbon::now();
-            $transaccion->save();
+            $movimiento->caja_id = $caja->id; // ID de la caja
+            $movimiento->usuario_id = $request->user_id; // ID del usuario que realiza el movimiento
+            $movimiento->tipo = 'entrada'; // Tipo de movimiento
+            $movimiento->descripcion = "Registro de venta"; // Descripción del movimiento
+            $movimiento->apertura_id = $apertura->id;
+            $movimiento->fecha = now(); // Establecer la fecha actual
+
+            // Verificar la forma de pago y asignar el monto correspondiente
+            if ($request->forma_pago === 'Divisa') {
+                $movimiento->monto_dolares = $montoTotal; // Asignar el monto total en dólares
+                $movimiento->monto_bolivares = 0; // Asegúrate de que el campo en bolívares esté vacío
+
+                $transaccion = new Transaccion();
+                $transaccion->caja_id = $caja->id;
+                $transaccion->usuario_id = Auth::user()->id;
+                $transaccion->monto_total_bolivares = 0;
+                $transaccion->monto_total_dolares = $montoTotal;
+                $transaccion->metodo_pago = $request->metodoPago;
+                $transaccion->moneda = 'Dollar';
+                $transaccion->fecha = Carbon::now();
+                $transaccion->apertura_id = $apertura->id;
+                $transaccion->save();
+
+            } else {
+                $movimiento->monto_bolivares = $montoTotal; // Asignar el monto total en bolívares
+                $movimiento->monto_dolares = 0; // Asegúrate de que el campo en dólares esté vacío
+
+                $transaccion = new Transaccion();
+                $transaccion->caja_id = $caja->id;
+                $transaccion->usuario_id = Auth::user()->id;
+                $transaccion->monto_total_bolivares = $montoTotal;
+                $transaccion->monto_total_dolares = 0;
+
+                $transaccion->metodo_pago = $request->metodoPago;
+                $transaccion->apertura_id = $apertura->id;
+                $transaccion->moneda = 'Bolivar';
+                $transaccion->fecha = Carbon::now();
+                $transaccion->save();
+            }
+
+            // Guardar el movimiento en la base de datos
+            $movimiento->save();
+
+
         }
-
-        // Guardar el movimiento en la base de datos
-        $movimiento->save();
-
-       
-    }
 
         Alert::success('¡Exito!', 'Venta generada exitosamente')->showConfirmButton('Aceptar', 'rgba(79, 59, 228, 1)');
         return redirect()->route('ventas.index');
@@ -390,10 +410,54 @@ class VentaController extends Controller
 
     public function export(Request $request)
     {
-     //   dd("test");
+        //   dd("test");
         $start_date = $request->input('start_date');
         $end_date = $request->input('end_date');
 
         return Excel::download(new VentasExport($start_date, $end_date), 'ventas_' . $start_date . '_to_' . $end_date . '.xlsx');
+    }
+
+    public function mesaGestion(Request $request, $id)
+    {
+        // Buscar la mesa
+        $mesa = Mesa::find($id);
+
+        // Verificar si la mesa existe
+        if (!$mesa) {
+            Alert::error('¡Error!', 'La mesa no existe')->showConfirmButton('Aceptar', 'rgba(79, 59, 228, 1)');
+            return redirect()->back();
+        }
+
+        // Si la mesa está disponible, mostrar un mensaje de alerta
+        if ($mesa->estado == "Disponible") {
+            Alert::info('¡Sin comensal!', 'Mesa disponible')->showConfirmButton('Aceptar', 'rgba(79, 59, 228, 1)');
+            return redirect()->back();
+        }
+
+        // Buscar la venta pendiente asociada a la mesa
+        $venta = Venta::where('status', 'Pendiente')->where('mesa_id', $mesa->id)->first();
+
+        // Verificar si la venta existe
+        if (!$venta) {
+            Alert::error('¡Error!', 'No se encontró una venta pendiente para esta mesa')->showConfirmButton('Aceptar', 'rgba(79, 59, 228, 1)');
+            return redirect()->route('cuentas-por-cobrar.index'); // Redirigir a la lista de cuentas por cobrar
+        }
+
+        // Buscar la deuda asociada a la venta
+        $deuda = CuentaPorCobrar::where('venta_id', $venta->id)->first();
+
+        // Verificar si la deuda existe
+        if (!$deuda) {
+            Alert::error('¡Error!', 'No se encontró una deuda para esta venta')->showConfirmButton('Aceptar', 'rgba(79, 59, 228, 1)');
+            return redirect()->route('cuentas-por-cobrar.index'); // Redirigir a la lista de cuentas por cobrar
+        }
+
+        // Verificar si la deuda ya está pagada
+        if ($deuda->estado == 'Pagado') {
+            Alert::error('¡Error!', 'Esta deuda ya está pagada')->showConfirmButton('Aceptar', 'rgba(79, 59, 228, 1)');
+            return redirect()->route('cuentas-por-cobrar.edit', $deuda->id); // Redirigir al formulario de edición de la deuda
+        }
+
+        return redirect()->route('cuentas-por-cobrar.show', $deuda->id);
     }
 }

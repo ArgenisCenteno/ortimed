@@ -33,7 +33,7 @@
             responsive: true,
             ajax: "{{ route('ventas.datatableProductoVenta') }}",
             dataType: 'json',
-            type: "POST",
+            type: "POST",  
             columns: [
                 {
                 data: 'imagenes', // Asumiendo que 'imagenes' es un array con las imágenes del producto

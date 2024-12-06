@@ -58,7 +58,7 @@ class CompraController extends Controller
                     $deleteUrl = route('compras.destroy', $row->id);
                     $pdfUrl = route('compras.pdf', $row->id); // Asegúrate de que la ruta esté correcta
                     return '
-                            <a href="' . $pdfUrl . '" class="btn btn-success btn-sm" target="_blank">Recibo</a>
+                            <a href="' . $viewUrl . '" class="btn btn-info btn-sm" >Ver</a>
                            <form action="' . $deleteUrl . '"  method="POST" style="display:inline; " class="btn-delete">
                             ' . csrf_field() . '
                             ' . method_field('DELETE') . '

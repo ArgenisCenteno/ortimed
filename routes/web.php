@@ -7,6 +7,7 @@ use App\Http\Controllers\CompraController;
 use App\Http\Controllers\CuentaPorCobrarController;
 use App\Http\Controllers\CuentaPorPagarController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\MesaController;
 use App\Http\Controllers\NotificacionController;
 use App\Http\Controllers\PagoController;
 use App\Http\Controllers\PdfController;
@@ -40,6 +41,7 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/checkout', [CarritoController::class, 'checkout'])->name('pagar');
 Route::post('/pagarCuenta', [PagoController::class, 'pagarCuenta'])->name('pagarCuenta');
 Route::resource('cuentas-por-cobrar', CuentaPorCobrarController::class);
+Route::get('/gestionMesa/{id}', [VentaController::class, 'mesaGestion'])->name('venta.mesaGestion');
 
 //Notificaciones
 Route::resource('cuentas-por-pagar', CuentaPorPagarController::class);
@@ -73,6 +75,7 @@ Route::get('/cierres', [CajaController::class, 'cierresIndex'])->name('caja.cier
 Route::get('/pagos/export', [PagoController::class, 'export'])->name('pagos.export');
 /* VENTAS */
 Route::get('/ventas/export', [VentaController::class, 'export'])->name('ventas.export');
+Route::resource('mesas', MesaController::class);
 
 Route::resource('ventas', App\Http\Controllers\VentaController::class);
 

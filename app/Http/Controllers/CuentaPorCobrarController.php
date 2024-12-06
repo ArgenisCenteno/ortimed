@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\AperturaCaja;
 use App\Models\Caja;
 use App\Models\CuentaPorCobrar;
+use App\Models\Mesa;
 use App\Models\Movimiento;
 use App\Models\Pago;
 use App\Models\Recibo;
@@ -199,6 +200,12 @@ class CuentaPorCobrarController extends Controller
         $venta->status = 'Pagado';
         $venta->pago_id = $pago->id;
         $venta->save();
+
+        if($venta->tipo_servicio == 'comer_aqui'){
+            $mesa = Mesa::find($venta->mesa_id);
+            $mesa->estado = 'Disponible';
+            $mesa->save();
+        }
 
         Alert::success('¡Exito!', 'Cuenta por cobrar actualizada correctamente')->showConfirmButton('Aceptar', 'rgba(79, 59, 228, 1)');
 

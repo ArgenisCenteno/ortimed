@@ -12,7 +12,7 @@
             <input type="hidden" name="productos" id="productosInput">
 
         </div>
-        
+
         <div class=" mb-4">
             <div class="card  p-4 bg-dark text-white">
                 <h4 class=" mb-3">Empleado: {{ auth()->user()->name }}</h4>
@@ -44,7 +44,7 @@
                 <div class="row g-3" id="metodosPagoContainer">
                     <div class="col-12 mb-3">
                         <label for="metodoPago" class="form-label">
-                          <strong>Forma de Pago</strong>
+                            <strong>Forma de Pago</strong>
                         </label>
                         <select class="form-select" id="metodoPago" name="metodoPago">
                             <option value="Efectivo">Efectivo</option>
@@ -52,19 +52,32 @@
                             <option value="Pago Movil">Pago Móvil</option>
                             <option value="Divisa">Divisa</option>
                             <option value="Punto de Venta">Punto de Venta</option>
+                            <option value="Pagar luego">Pagar luego</option>
+                            <option value="A Credito">Credito</option>
+
                         </select>
                     </div>
 
                     <div class="col-12 mb-3">
                         <label for="Mesa" class="form-label">
-                           <strong>Mesa</strong>
+                            <strong>Mesa</strong>
                         </label>
-                        <select class="form-select" id="Mesa" name="mesa">
-                            <option value="Mesa 1">Mesa 1</option>
-                            <option value="Mesa 2">Mesa 2</option>
-                            <option value="Mesa 3">Mesa 3</option>
-                            <option value="Mesa 4">Mesa 4</option>
-                            <option value="Mesa 5">Mesa 5</option>
+                        <select id="mesa_id" name="mesa_id" class="form-control">
+                            <option value="">Seleccione una mesa (opcional)</option>
+                            @foreach($mesas as $mesa)
+                                <option value="{{ $mesa->id }}">{{ $mesa->numero }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="col-12 mb-3">
+                        <label for="Mesa" class="form-label">
+                            <strong>Servicio</strong>
+                        </label>
+                        <select id="tipo_servicio" name="tipo_servicio" class="form-control" required>
+                            <option value="comer_aqui">Comer aquí</option>
+                            <option value="delivery">Delivery</option>
+                            <option value="para_llevar">Para llevar</option>
                         </select>
                     </div>
                 </div>

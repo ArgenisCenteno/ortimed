@@ -2,7 +2,7 @@
     <table class="table table-hover" id="productos-table2">
         <thead class="bg-light">
             <tr>
-            <th></th>
+            <th>Imagen</th>
                 <th>Nombre</th>
                 <th>Costo</th>
                 <th> IVA</th>
@@ -33,7 +33,7 @@
             responsive: true,
             ajax: "{{ route('ventas.datatableProductoVenta') }}",
             dataType: 'json',
-            type: "POST",
+            type: "POST",  
             columns: [
                 {
                 data: 'imagenes', // Asumiendo que 'imagenes' es un array con las imágenes del producto
@@ -58,7 +58,7 @@
                     searchable: false,
                     orderable: false,
                     render: function (data, type, full, meta) {
-                        return '<button type="button" class="btn btn-primary addToCartBtn" data-product-id="' + data + '"><i class="fas fa-shopping-cart"></i></button>';
+                        return '<button type="button" class="btn btn-success addToCartBtn" data-product-id="' + data + '">Agregar</button>';
                     }
                 }
             ],
@@ -126,23 +126,32 @@
                             cantidad: 1 // Cantidad inicial
                         });
                         const productoHTML = `
-<div class="productoCarrito p-2 border rounded bg-light mb-2" id="productoCarrito_${productId}">
-    <div class="d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">Bs ${precioProductoIva}</h5>
-        <span class="aplicaIVA text-primary d-none" id="aplicaIVA_${productId}">${productIva}</span>
+<div class="productoCarrito p-2 border rounded bg-light mb-2 d-flex align-items-center" id="productoCarrito_${productId}">
+    <!-- Nombre del producto -->
+    <small class="nombreProducto mb-0 me-3">Nombre: ${productName}</small>
+
+    <!-- Precio final con IVA -->
+    <small class="mb-0 me-3"><strong>Bs ${precioProductoIva}</strong></small>
+
+    <!-- IVA (oculto inicialmente) -->
+    <span class="aplicaIVA text-primary d-none me-3" id="aplicaIVA_${productId}">${productIva}</span>
+
+    <!-- Precio bruto -->
+    <small class="text-muted me-3">
+          <strong class="text-success" id="precioProducto_${productId}">Bs ${productPrice}</strong>
+    </small>
+
+    <!-- Cantidad -->
+    <div class="input-group me-3">
+        <input type="number" class="form-control cantidadProducto" value="1" min="1" id="cantidadProducto_${productId}">
+        <input type="hidden" class="stock" id="stock_${productId}" value="${productoStock}"/>
     </div>
-    <h6 class="mt-1 nombreProducto">${productName}</h6>
-    <small class="text-muted">Precio bruto: <span class="fw-bold text-success" id="precioProducto_${productId}">Bs ${productPrice}</span></small>
-     
-    <div class="d-flex align-items-center mt-2">
-        <div class="input-group me-2">
-            <span class="input-group-text">Cant:</span>
-            <input type="number" class="form-control cantidadProducto" value="1" min="1" id="cantidadProducto_${productId}">
-            <input type="hidden" class="stock" id="stock_${productId}" value="${productoStock}"/>
-        </div>
-        <button type="button" class="btn btn-outline-danger btn-sm removeProducto" id="removeProducto_${productId}">Eliminar</button>
-    </div>
+
+    <!-- Botón de eliminar -->
+    <button type="button" class="btn btn-danger btn-sm removeProducto" id="removeProducto_${productId}">Descartar</button>
 </div>
+
+
 `;
 
 
@@ -198,7 +207,17 @@
             const productId = $(this).attr('id').split('_')[1]; // Obtener el ID del producto
             const nuevaCantidad = parseInt($(this).val());
             const stockDisponible = parseInt($(`#stock_${productId}`).val()); // Obtener el stock disponible
-           
+            if (nuevaCantidad > stockDisponible) {
+                Swal.fire({
+                    title: 'Sin disponibilidad suficiente',
+                    text: "No hay disponibilidad suficiente actualmente",
+                    icon: 'info',
+                    showCancelButton: false,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33'
+                })
+                $(this).val(stockDisponible);
+            }
 
             // Actualizar la cantidad en el array
             productosEnCarrito = productosEnCarrito.map(function (producto) {

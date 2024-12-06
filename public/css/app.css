@@ -1,0 +1,8 @@
+.custom-hr {
+    border: none;
+    height: 2px;
+    background: linear-gradient(to right, #4caf50, #81c784);
+    margin: 20px 0;
+    border-radius: 5px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}

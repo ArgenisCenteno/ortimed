@@ -14,28 +14,22 @@
                 <div class="form-group">
                     <label for="monto_total">Monto Total</label>
                     <input type="text" class="form-control" id="monto_total"
-                        value="{{ number_format($venta->pago->monto_total, 2) }}" readonly>
+                        value="{{ number_format($venta->monto_total, 2) }}" readonly>
                 </div>
             </div>
 
-            <!-- Monto Neto -->
             <div class="col-md-4 mb-3">
                 <div class="form-group">
-                    <label for="monto_neto">Monto Neto</label>
-                    <input type="text" class="form-control" id="monto_neto"
-                        value="{{ number_format($venta->pago->monto_neto, 2) }}" readonly>
+                    <label for="status_pago">Estado del Pago</label>
+                    <input value="{{ $venta->status }}" readonly class="form-control" />
                 </div>
             </div>
+           
         </div>
 
         <div class="row">
             <!-- Estado del Pago -->
-            <div class="col-md-4 mb-3">
-                <div class="form-group">
-                    <label for="status_pago">Estado del Pago</label>
-                    <input value="{{ $venta->pago->status }}" readonly class="form-control" />
-                </div>
-            </div>
+           
 
             <!-- Fecha de Venta -->
             <div class="col-md-4 mb-3">
