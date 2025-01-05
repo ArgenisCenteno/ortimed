@@ -10,6 +10,8 @@ use Illuminate\Http\Request;
 use Alert;
 use Carbon;
 use PDF;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+
 class PdfController extends Controller
 {
     public function pdfVenta(Request $request, $id)
@@ -25,11 +27,12 @@ class PdfController extends Controller
         $userArray = $venta->user->makeHidden(['password', 'remember_token'])->toArray();
         $fechaVenta = $venta->created_at->format('d-m-Y');
         $formaPagoArray = json_decode($venta->pago->forma_pago, true); 
-
+        $ventaId = $venta->id;
+         $qrCode = QrCode::size(120)->generate('http://127.0.0.1:8000/pdfVenta/' . $id);
 
        // dd($vendedorArray);
         $pdf = \App::make('dompdf.wrapper');
-        $pdf->loadView('ventas.pdf', compact('venta', 'formaPagoArray', 'vendedorArray', 'userArray', 'fechaVenta'));
+        $pdf->loadView('ventas.pdf', compact('qrCode','venta', 'formaPagoArray', 'vendedorArray', 'userArray', 'fechaVenta'));
         return $pdf->stream('venta.pdf');
     }
 
@@ -47,10 +50,12 @@ class PdfController extends Controller
         $fechacompra = $compra->created_at->format('d-m-Y');
         $formaPagoArray = json_decode($compra->pago->forma_pago, true); 
 
+        $compraId = $compra->id;
+        $qrCode = QrCode::size(120)->generate('http://127.0.0.1:8000/pdfVenta/' . $id);
 
        // dd($vendedorArray);
         $pdf = \App::make('dompdf.wrapper');
-        $pdf->loadView('compras.pdf', compact('compra', 'formaPagoArray', 'vendedorArray',  'fechacompra'));
+        $pdf->loadView('compras.pdf', compact('qrCode','compra', 'formaPagoArray', 'vendedorArray',  'fechacompra'));
         return $pdf->stream('venta.pdf');
     }
 

@@ -1,124 +1,183 @@
+<section >
+    <div >
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col">
+                <div class="card">
+                    <div class="card-body p-4">
 
-    <form>
-        <div class="row">
-            <!-- Vendedor -->
-            <div class="col-md-4 mb-3">
-                <div class="form-group">
-                    <label for="vendedor">Comprador</label>
-                    <input type="text" class="form-control" id="vendedor" value="{{ $compra->user->name }}" readonly>
+                        <div class="row">
+
+                            <div class="col-lg-7">
+                                <h5 class="mb-3"><a href="{{route('compras.index')}}" class="text-body"><i
+                                            class="fas fa-long-arrow-alt-left me-2"></i>Regresar</a></h5>
+                                <hr>
+
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                    <div>
+                                        <p class="mb-1">Productos Vendidos</p>
+                                    </div>
+                                    <div>
+                                        <p class="mb-0">Se vendieron {{count($compra->detalleCompras)}} productos</p>
+                                      
+                                    </div>
+                                </div>
+                                <div class="card mb-3">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between">
+                                            <div class="d-flex flex-row align-items-center">
+                                                <div class="ms-3">
+                                                    <span>PRODUCTO</span>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex flex-row align-items-center">
+                                                <div style="width: 80px;">
+                                                    <span class="fw-normal mb-0">CANT.</span>
+                                                </div>
+                                                <div style="width: 80px;">
+                                                    <span class="mb-0">PRECIO</span>
+                                                </div>
+                                                <div style="width: 80px;">
+                                                    <span class="mb-0">NETO</span>
+                                                </div>
+                                                <div style="width: 80px;">
+                                                    <span class="mb-0">IVA</span>
+                                                </div>
+                                                <div style="width: 80px;">
+                                                    <span class="mb-0">TOTAL</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                @foreach($compra->detalleCompras as $detalle)
+                                    <div class="card mb-3">
+                                        <div class="card-body">
+                                            <div class="d-flex justify-content-between">
+                                                <div class="d-flex flex-row align-items-center">
+
+                                                    <div class="ms-3">
+                                                        <h5>{{ $detalle->producto->nombre }}</h5>
+                                                        <p class="small mb-0">{{ $detalle->producto->descripcion }}</p>
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex flex-row align-items-center">
+                                                    <div style="width: 80px;">
+                                                        <h5 class="fw-normal mb-0">
+                                                            {{ number_format($detalle->cantidad, 2) }}
+                                                        </h5>
+                                                    </div>
+                                                    <div style="width: 80px;">
+                                                        <h5 class="mb-0">{{ number_format($detalle->precio_producto, 2) }}
+                                                        </h5>
+                                                    </div>
+                                                    <div style="width: 80px;">
+                                                        <h5 class="mb-0">{{ number_format($detalle->neto, 2) }}</h5>
+                                                    </div>
+                                                    <div style="width: 80px;">
+                                                        <h5 class="mb-0">{{ number_format($detalle->impuesto, 2) }}</h5>
+                                                    </div>
+                                                    <div style="width: 80px;">
+                                                        <h5 class="mb-0">
+                                                            {{ number_format($detalle->impuesto + $detalle->neto, 2) }}
+                                                        </h5>
+
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                @endforeach
+
+
+                            </div>
+                            <div class="col-lg-5">
+                                <div class="card bg-primary text-white rounded-3">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between align-items-center mb-4">
+                                            <h5 class="mb-0">Detalles de Venta</h5>
+
+                                        </div>
+
+
+
+                                        <form class="mt-4">
+                                            <div data-mdb-input-init class="form-outline form-white mb-4">
+                                                <input type="text" id="typeText" class="form-control form-control-lg"
+                                                    size="17" placeholder="{{ $compra->user->name }}" readonly />
+                                                <label class="form-label" for="typeText">Comprador</label>
+                                            </div>
+
+                                            <div class="row mb-4">
+                                                <div class="col-md-12">
+                                                    <div data-mdb-input-init class="form-outline form-white">
+                                                        <input type="text" id="typeExp"
+                                                            class="form-control form-control-lg"
+                                                            value="{{ $compra->proveedor->razon_social }}" readonly
+                                                            placeholder="Comprador" size="7" />
+                                                        <label class="form-label" for="typeExp">Proveedor</label>
+                                                    </div>
+                                                </div>
+                                                 
+                                            </div>
+
+                                            <div class="row mb-4">
+                                                 
+                                                <div class="col-md-12">
+                                                    <div data-mdb-input-init class="form-outline form-white">
+                                                        <input type="text" id="typeText"
+                                                            class="form-control form-control-lg"
+                                                            value="{{ $compra->pago->status }}" readonly
+                                                            placeholder="Estado del Pago" size="1" />
+                                                        <label class="form-label" for="typeText">Estado del Pago</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div data-mdb-input-init class="form-outline form-white mb-4">
+                                                <input type="text" id="typeText" class="form-control form-control-lg"
+                                                    size="17" value="{{ $compra->created_at->format('Y-m-d') }}" readonly
+                                                    placeholder="Fecha de Compra" />
+                                                <label class="form-label" for="typeText">Fecha de Compra</label>
+                                            </div>
+                                        </form>
+
+
+                                        <hr class="my-4">
+
+                                        <div class="d-flex justify-content-between">
+                                            <p class="mb-2">Subtotal</p>
+                                            <p class="mb-2">${{ number_format($compra->pago->monto_neto, 2) }}</p>
+                                        </div>
+
+                                        <div class="d-flex justify-content-between">
+                                            <p class="mb-2">IVA (16%)</p>
+                                            <p class="mb-2">${{ number_format($compra->pago->impuestos, 2) }}</p>
+                                        </div>
+
+                                        <div class="d-flex justify-content-between mb-4">
+                                            <p class="mb-2">Total(Incl. IVA)</p>
+                                            <p class="mb-2">${{ number_format($compra->pago->monto_total, 2) }}</p>
+                                        </div>
+
+                                        <div class="d-flex justify-content-between mb-4">
+                                            <p class="mb-2">Total(BS)</p>
+                                            <p class="mb-2">${{ number_format($compra->pago->tasa_dolar * $compra->pago->monto_total, 2) }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
                 </div>
             </div>
-
-            <!-- Cliente -->
-            <div class="col-md-4 mb-3">
-                <div class="form-group">
-                    <label for="cliente">Proveedor</label>
-                    <input type="text" class="form-control" id="cliente" value="{{ $compra->proveedor->razon_social }}" readonly>
-                </div>
-            </div>
-
-            <!-- Monto Total -->
-            <div class="col-md-4 mb-3">
-                <div class="form-group">
-                    <label for="monto_total">Monto Total</label>
-                    <input type="text" class="form-control" id="monto_total" value="{{ number_format($compra->pago->monto_total, 2) }}" readonly>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <!-- Monto Neto -->
-            <div class="col-md-4 mb-3">
-                <div class="form-group">
-                    <label for="monto_neto">Monto Neto</label>
-                    <input type="text" class="form-control" id="monto_neto" value="{{ number_format($compra->pago->monto_neto, 2) }}" readonly>
-                </div>
-            </div>
-
-            <!-- Estado del Pago -->
-            <div class="col-md-4 mb-3">
-                <div class="form-group">
-                    <label for="status_pago">Estado del Pago</label>
-                    <input value="{{ $compra->pago->status }}" readonly class="form-control" />
-                </div>
-            </div>
-
-            <!-- Fecha de compra -->
-            <div class="col-md-4 mb-3">
-                <div class="form-group">
-                    <label for="fecha_compra">Fecha de compra</label>
-                    <input type="text" class="form-control" id="fecha_compra" value="{{ $compra->created_at->format('Y-m-d') }}" readonly>
-                </div>
-            </div>
-        </div>
-</form>
-
-
-    <!-- Detalles de compra -->
-    <div class="card mb-4">
-        <div class="card-header">
-            <h5>Detalles de la compra</h5>
-        </div>
-        <div class="card-body  table-responsive">
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Producto</th>
-                        <th>Precio</th>
-                        <th>Cantidad</th>
-                        <th>Subtotal</th>
-                        <th>Impuesto</th>
-                        <th>Total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($compra->detallecompras as $detalle)
-                    <tr>
-                        <td>{{ $detalle->id }}</td>
-                        <td>{{ $detalle->producto->nombre }}</td>
-                        <td>{{ number_format($detalle->precio_producto, 2) }}</td>
-                        <td>{{ $detalle->cantidad }}</td>
-                        <td>{{ number_format($detalle->neto, 2) }}</td>
-                        <td>{{ number_format($detalle->impuesto, 2) }}</td>
-                        <td>{{ number_format($detalle->impuesto + $detalle->neto, 2) }}</td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
         </div>
     </div>
-
-    <!-- Pago -->
-    <div class="card mb-4">
-        <div class="card-header">
-            <h5>Detalles del Pago</h5>
-        </div>
-        <div class="card-body  table-responsive">
-            <table class="table table-hover ">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Monto Total</th>
-                        <th>Monto Neto</th>
-                        <th>Impuestos</th>
-                        <th>Tasa de Dólar</th>
-                        <th>Fecha de Pago</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>{{ $compra->pago->id }}</td>
-                        <td>{{ number_format($compra->pago->monto_total, 2) }}</td>
-                        <td>{{ number_format($compra->pago->monto_neto, 2) }}</td>
-                        <td>{{ number_format($compra->pago->impuestos, 2) }}</td>
-                        <td>{{ number_format($compra->pago->tasa_dolar, 2) }}</td>
-                        <td>{{ $compra->pago->fecha_pago }}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    
-    </div>
+</section>

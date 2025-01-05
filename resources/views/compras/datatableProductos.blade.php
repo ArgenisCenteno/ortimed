@@ -2,7 +2,7 @@
     <table class="table table-hover" id="productos-table2">
         <thead class="bg-light">
             <tr>
-            <th>Imagen</th>
+                <th>Imagen</th>
                 <th>Nombre</th>
                 <th>Costo</th>
                 <th> IVA</th>
@@ -33,16 +33,16 @@
             responsive: true,
             ajax: "{{ route('ventas.datatableProductoVenta') }}",
             dataType: 'json',
-            type: "POST",  
+            type: "POST",
             columns: [
                 {
-                data: 'imagenes', // Asumiendo que 'imagenes' es un array con las imágenes del producto
-                name: 'imagenes',
-                render: function (data) {
-                    // Verificamos si hay imágenes y devolvemos la primera
-                    return data.length > 0 ? `<img src="${data[0].url}" alt="Imagen" style="width: 100px; height: auto;">` : 'Sin imagen'; // Cambia 'url' por el campo correcto de tu objeto de imagen
-                }
-            },
+                    data: 'imagenes', // Asumiendo que 'imagenes' es un array con las imágenes del producto
+                    name: 'imagenes',
+                    render: function (data) {
+                        // Verificamos si hay imágenes y devolvemos la primera
+                        return data.length > 0 ? `<img src="${data[0].url}" alt="Imagen" style="width: 100px; height: auto;">` : 'Sin imagen'; // Cambia 'url' por el campo correcto de tu objeto de imagen
+                    }
+                },
                 { data: 'nombre', name: 'nombre' },
                 { data: 'precio_compra', name: 'precio_compra' },
                 {
@@ -82,6 +82,7 @@
             const url = '{{ route('productos.obtener', ['id' => ':id']) }}';
             const urlWithId = url.replace(':id', productId);
             const $button = $(this);
+            const dollar = $('#tasa').val();
 
             $.ajax({
                 url: urlWithId,
@@ -108,9 +109,9 @@
                         const productIva = producto.aplica_iva ? 'Sí' : 'No';
                         var precioProductoIva = producto.precio_compra;
                         if (productIva == 'Sí') {
-                            var precioProductoIva = productPrice * 1.16;
+                            var precioProductoIva = (productPrice * 1.16 * dollar).toFixed(2);
                         } else {
-                            var precioProductoIva = productPrice;
+                            var precioProductoIva = productPrice * dollar;
                         }
                         const productDescription = producto.descripcion;
                         const productLote = producto.lote;
@@ -194,13 +195,13 @@
             actualizarProductosInput();
 
             Swal.fire({
-                            title: 'Producto Descartado',
-                            text: "Se ha descatado un producto del carrito.",
-                            icon: 'success',
-                            showCancelButton: false,
-                            confirmButtonColor: '#3085d6',
-                            cancelButtonColor: '#d33'
-                        })
+                title: 'Producto Descartado',
+                text: "Se ha descatado un producto del carrito.",
+                icon: 'success',
+                showCancelButton: false,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33'
+            })
         });
 
         $(document).on('change', '.cantidadProducto', function () {
@@ -234,7 +235,7 @@
         // Función para calcular el total de la venta
         function calcularTotal() {
             let total = 0;
-
+            const dollar = $('#tasa').val();
             // Iterar sobre cada producto en el carrito
             $('.productoCarrito').each(function () {
                 const productId = $(this).attr('id').split('_')[1];
@@ -246,7 +247,7 @@
                     const cantidad = parseInt($('#cantidadProducto_' + productId).val());
                     const aplicaIva = $('#aplicaIVA_' + productId).text().trim() === 'Sí';
 
-                    let subtotalProducto = precioProducto * cantidad;
+                    let subtotalProducto = precioProducto * cantidad * dollar;
 
                     // Aplicar el IVA si corresponde
                     if (aplicaIva) {
@@ -261,7 +262,7 @@
 
 
             // Mostrar el total calculado
-            $('.totalVenta').text('$' + total.toFixed(2));
+            $('.totalVenta').text(total.toFixed(2));
 
         }
 

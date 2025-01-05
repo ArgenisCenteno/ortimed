@@ -1,5 +1,11 @@
-<nav class="app-header navbar bg-light navbar-expand bg-body"
-  style="background-image: linear-gradient(90deg, #7950f2 5%, #4dabf7 95%);"> <!--begin::Container-->
+<style>
+  .bg-custom-green {
+    background-color: #2ecc71;
+    /* You can change this to any green color you prefer */
+  }
+</style>
+
+<nav class="app-header navbar bg-success text-white navbar-expand bg-body"> <!--begin::Container-->
   <div class="container-fluid"> <!--begin::Start Navbar Links-->
     <ul class="navbar-nav">
       <li class="nav-item">
@@ -30,7 +36,7 @@
           <li><a class="dropdown-item" href="{{route('compras.index')}}">Historial</a></li>
         </ul>
       </li>
-
+      @if(Auth::user()->hasRole('superAdmin'))
       <!-- Productos Link -->
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="monedaDropdown" role="button" data-bs-toggle="dropdown"
@@ -42,7 +48,7 @@
           <li><a class="dropdown-item" href="{{ route('almacen') }}">Inventario</a></li>
         </ul>
       </li>
-
+@endif
       <!-- Clasificador Dropdown -->
 
 
@@ -84,21 +90,23 @@
           <li><a class="dropdown-item" href="{{route('cuentas-por-cobrar.index')}}">Cuentas Por Cobrar</a></li>
           <li><a class="dropdown-item" href="{{route('cuentas-por-pagar.index')}}">Cuentas Por Pagar</a></li>
 
-          
+
         </ul>
       </li>
+      @if(Auth::user()->hasRole('superAdmin'))
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="transaccionesDropdown" role="button" data-bs-toggle="dropdown"
           aria-expanded="false">
           Proveedores
         </a>
         <ul class="dropdown-menu" aria-labelledby="transaccionesDropdown">
-         
+
           <li><a class="dropdown-item" href="{{route(name: 'proveedores.create')}}">Nuevo Proveedor</a></li>
 
           <li><a class="dropdown-item" href="{{route('proveedores.index')}}">Proveedores</a></li>
         </ul>
       </li>
+     
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="transaccionesDropdown" role="button" data-bs-toggle="dropdown"
           aria-expanded="false">
@@ -110,6 +118,7 @@
 
         </ul>
       </li>
+      
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="ventasDropdown" role="button" data-bs-toggle="dropdown"
           aria-expanded="false">
@@ -120,6 +129,29 @@
           <li><a class="dropdown-item" href="{{route('mesas.index')}}">Nueva Mesa</a></li>
         </ul>
       </li>
+     
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="ventasDropdown" role="button" data-bs-toggle="dropdown"
+          aria-expanded="false">
+          Empleados
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="ventasDropdown">
+          <li><a class="dropdown-item" href="{{route('empleados.create')}}">Empleados</a></li>
+          <li><a class="dropdown-item" href="{{route('empleados.index')}}">Nuevo Empleado</a></li>
+        </ul>
+      </li>
+   
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="ventasDropdown" role="button" data-bs-toggle="dropdown"
+          aria-expanded="false">
+          Nomina
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="ventasDropdown">
+          <li><a class="dropdown-item" href="{{route('pagos_empleados.create')}}">Pagos</a></li>
+          <li><a class="dropdown-item" href="{{route('pagos_empleados.index')}}">Nuevo Pago</a></li>
+        </ul>
+      </li>
+      @endif
     </ul>
     <ul class="navbar-nav ms-auto"> <!--begin::Navbar Search-->
 

@@ -110,7 +110,34 @@ class CompraController extends Controller
 
     public function comprar(Request $request)
     {
-        $dollar = Tasa::where('name', 'Dollar')->where('status', 'Activo')->first();
+        function isConnected()
+        {
+            $connected = @fsockopen("www.google.com", 80); // Intenta conectar al puerto 80 de Google
+            if ($connected) {
+                fclose($connected);
+                return true; // Hay conexión
+            }
+            return false; // No hay conexión
+        }
+
+        if (isConnected()) {
+            $response = file_get_contents("https://ve.dolarapi.com/v1/dolares/oficial");
+          
+        } else {
+             
+            $response = false;
+        }
+ 
+
+
+        // dd();
+        if ($response) {
+            $dato = json_decode($response);
+            $dollar = $dato->promedio;
+        } else {
+            $tasa = Tasa::where('name', 'DOLLAR')->where('status', 'Activo')->first();
+            $dollar = $tasa->valor;
+        }
         $users = Proveedor::pluck('razon_social', 'id');
 
         return view('compras.comprar')->with('dollar', $dollar)->with('users', $users);
@@ -308,7 +335,7 @@ class CompraController extends Controller
 
 
         Alert::success('¡Exito!', 'Compra generada exitosamente')->showConfirmButton('Aceptar', 'rgba(79, 59, 228, 1)');
-        return redirect()->back();
+        return redirect()->route('compras.index');
     }
 
     public function destroy($id)

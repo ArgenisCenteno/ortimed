@@ -10,14 +10,20 @@
                         <div class="col-lg-12">
                             @include('flash::message')
                         </div>
-                        <div class="col-md-6 col-6">
-                            <h3 class="p-2 bold">Detalles de Venta </h3>
+                        <div class="col-md-12 col-12 text-left">
+                            <h3 class="p-2 bold ">Editar Empleado</h3>
                         </div>
-                     
+                      
                     </div>
                     <div class="card-body">
                   
-                        @include('ventas.showFields')
+                     <div class="row">
+                       
+                        <div class="col-12">
+                         
+                            @include('empleados.fields_edit') 
+                        </div>
+                     </div>
                     </div>
                 </div>
             </div>
@@ -26,7 +32,3 @@
 </div>
 </main> <!--end::App Main--> <!--begin::Footer-->
 @endsection
-@section('js')
-@include('layout.script')
-<script src="{{ asset('js/adminlte.js') }}"></script>
-<script src="{{asset('js/sweetalert2.js')}}"></script>

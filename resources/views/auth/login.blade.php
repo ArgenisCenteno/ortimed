@@ -1,7 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
-<section class="vh-100 p-0 bg-light" style="background-image: linear-gradient(90deg, #7950f2 5%, #4dabf7 95%);">
+<section class="vh-100 p-0" style="background: url('{{ asset('iconos/fondo.jpg') }}') no-repeat center center fixed; background-size: cover; color: white;">
+
   <div class="container-fluid">
     <div class="row min-vh-100 d-flex justify-content-center align-items-center">
       <div class="col-sm-12 text-black">

@@ -18,8 +18,8 @@
                 <h4 class=" mb-3">Empleado: {{ auth()->user()->name }}</h4>
 
                 <!-- Información de tasa de cambio oculta -->
-                <input type="hidden" name="tasa" id="tasa" value="{{ $dollar->valor }}">
-                <input type="hidden" name="id_tasa" value="{{ $dollar->id }}">
+                <input type="hidden" name="tasa" id="tasa" value="{{ $dollar}}">
+             
 
                 <!-- Selección de Caja y Cliente -->
                 <div class="mb-3">

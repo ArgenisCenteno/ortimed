@@ -11,13 +11,16 @@
                             @include('flash::message')
                         </div>
                         <div class="col-md-6 col-6">
-                            <h3 class="p-2 bold">Detalles de Venta </h3>
+                            <h3 class="p-2 bold">Empleados</h3>
                         </div>
-                     
+                        <div class="d-flex justify-content-end mt-3">
+                                 
+
+                            </div>
                     </div>
                     <div class="card-body">
                   
-                        @include('ventas.showFields')
+                        @include('empleados.table')
                     </div>
                 </div>
             </div>
@@ -26,7 +29,3 @@
 </div>
 </main> <!--end::App Main--> <!--begin::Footer-->
 @endsection
-@section('js')
-@include('layout.script')
-<script src="{{ asset('js/adminlte.js') }}"></script>
-<script src="{{asset('js/sweetalert2.js')}}"></script>

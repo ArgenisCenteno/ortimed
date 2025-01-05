@@ -6,10 +6,12 @@ use App\Http\Controllers\CarritoController;
 use App\Http\Controllers\CompraController;
 use App\Http\Controllers\CuentaPorCobrarController;
 use App\Http\Controllers\CuentaPorPagarController;
+use App\Http\Controllers\EmpleadoController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\MesaController;
 use App\Http\Controllers\NotificacionController;
 use App\Http\Controllers\PagoController;
+use App\Http\Controllers\PagoEmpleadoController;
 use App\Http\Controllers\PdfController;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\VentaController;
@@ -86,6 +88,9 @@ Route::get('/pdfVenta/{id}', [PdfController::class, 'pdfVenta'])->name('ventas.p
 
 // Ruta para obtener un producto por su ID
 Route::get('/producto/{id}', [VentaController::class, 'obtenerProducto'])->name('productos.obtener');
+Route::resource('empleados', EmpleadoController::class);
+Route::resource('pagos_empleados', PagoEmpleadoController::class);
+Route::get('/pagar/{id}', [PagoEmpleadoController::class, 'pagar'])->name('pagos_empleados.pagar');
 
 
 /* TASAS, MONEDAS E IMPUESTOS */

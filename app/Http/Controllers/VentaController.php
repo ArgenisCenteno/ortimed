@@ -132,7 +132,35 @@ class VentaController extends Controller
     public function vender(Request $request)
     {
         //$caja = Caja::where('activa', '1')->first();
-        $dollar = Tasa::where('name', 'Dollar')->where('status', 'Activo')->first();
+        function isConnected()
+        {
+            $connected = @fsockopen("www.google.com", 80); // Intenta conectar al puerto 80 de Google
+            if ($connected) {
+                fclose($connected);
+                return true; // Hay conexión
+            }
+            return false; // No hay conexión
+        }
+
+        if (isConnected()) {
+            $response = file_get_contents("https://ve.dolarapi.com/v1/dolares/oficial");
+          
+        } else {
+             
+            $response = false;
+        }
+ 
+
+
+        // dd();
+        if ($response) {
+            $dato = json_decode($response);
+            $dollar = $dato->promedio;
+        } else {
+            $tasa = Tasa::where('name', 'DOLLAR')->where('status', 'Activo')->first();
+            $dollar = $tasa->valor;
+        }
+       
         $users = User::pluck('name', 'id');
         $cajas = Caja::all();
         $mesas = Mesa::where('estado', 'Disponible')->get();
