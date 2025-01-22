@@ -44,7 +44,7 @@ class PagoController extends Controller
                 })
                 ->addColumn('tipo', function ($row) {
                     return $row->tipo; // Ajusta el formato de fecha aquí
-                })
+                }) 
 
                 ->addColumn('status', function ($row) {
                     $status = $row->status;
@@ -58,6 +58,7 @@ class PagoController extends Controller
                     $pdfUrl = route('pagos.pdf', $row->id); // Asegúrate de que la ruta esté correcta
                     return '
                     <a href="' . $viewUrl . '" class="btn btn-info btn-sm">Ver</a>
+                     <a href="' . $pdfUrl . '" class="btn btn-success btn-sm">PDF</a>
                            <form action="' . $deleteUrl . '"  method="POST" style="display:inline; " class="btn-delete">
                             ' . csrf_field() . '
                             ' . method_field('DELETE') . '

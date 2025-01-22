@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">  
     <title>Ortimed</title>
 
     <link rel="stylesheet" href="{{ public_path('css/bootstrap.min.css') }}"
@@ -60,7 +60,7 @@
 
 
         <!-- Título -->
-        <h3 style="text-align: center; color: #333; font-size: 24px; margin: 20px 0;">RECIBO DE VENTA</h3>
+        <h3 style="text-align: center; color: #333; font-size: 24px; margin: 20px 0;">RECIBO DE COMPRA</h3>
         <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
             <thead>
                 <tr>
@@ -75,7 +75,7 @@
                     <td style="padding: 8px; border-bottom: 1px solid #ddd;">CALLE EZEQUIEL ZAMORA, FRENTE CENTRO
                         CLINICO PUNTA DE MATA</td>
                     <td style="padding: 8px; border-bottom: 1px solid #ddd;">MONAGAS</td>
-                    <td style="padding: 8px; border-bottom: 1px solid #ddd;">{{$fechaVenta}}</td>
+                    <td style="padding: 8px; border-bottom: 1px solid #ddd;">{{$fechacompra}}</td>
                 </tr>
             </tbody>
         </table>
@@ -90,8 +90,8 @@
             <tbody>
 
                 <tr>
+                    <td style="padding: 8px; border-bottom: 1px solid #ddd;">{{$compra->proveedor->razon_social ?? ''}}</td>
                     <td style="padding: 8px; border-bottom: 1px solid #ddd;">{{$userArray['name']}}</td>
-                    <td style="padding: 8px; border-bottom: 1px solid #ddd;">{{$vendedorArray['name']}}</td>
 
 
                 </tr>

@@ -59,7 +59,8 @@ class CompraController extends Controller
                     $pdfUrl = route('compras.pdf', $row->id); // Asegúrate de que la ruta esté correcta
                     return '
                             <a href="' . $viewUrl . '" class="btn btn-info btn-sm" >Ver</a>
-                           <form action="' . $deleteUrl . '"  method="POST" style="display:inline; " class="btn-delete">
+                            <a href="' . $pdfUrl . '" class="btn btn-success btn-sm" target="_blank">PDF</a>
+                            <form action="' . $deleteUrl . '"  method="POST" style="display:inline; " class="btn-delete">
                             ' . csrf_field() . '
                             ' . method_field('DELETE') . '
                             <button type="submit" class="btn btn-danger btn-sm " >Eliminar</button>
@@ -221,6 +222,7 @@ class CompraController extends Controller
 
         // dd($request->metodoPago != 'A credito');
         //registrar pago
+         
         if ($request->metodoPago != 'A credito') {
             $estatus = 'Pagado';
 

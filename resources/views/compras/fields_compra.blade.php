@@ -44,7 +44,7 @@
                             <option value="Pago Movil">Pago Móvil</option>
                             <option value="Divisa">Divisa</option>
                             <option value="Punto de Venta">Punto de Venta</option>
-                            <option value="A Credito">Credito</option>
+                            <option value="A credito">Credito</option>
                         </select>
                     </div>
 
