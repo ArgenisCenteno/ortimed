@@ -169,7 +169,7 @@ class VentaController extends Controller
 
     public function datatableProductoVenta(Request $request)
     {
-        if ($request->ajax()) {
+        if ($request->ajax()) {  
             $productos = Producto::with('subCategoria', 'imagenes')->get(); // Cargar la relación subCategoria
 
             return DataTables::of($productos)

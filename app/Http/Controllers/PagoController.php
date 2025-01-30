@@ -58,7 +58,7 @@ class PagoController extends Controller
                     $pdfUrl = route('pagos.pdf', $row->id); // Asegúrate de que la ruta esté correcta
                     return '
                     <a href="' . $viewUrl . '" class="btn btn-info btn-sm">Ver</a>
-                     <a href="' . $pdfUrl . '" class="btn btn-success btn-sm">PDF</a>
+                     <a href="' . $pdfUrl . '" class="btn btn-success btn-sm" target="_blank">PDF</a>
                            <form action="' . $deleteUrl . '"  method="POST" style="display:inline; " class="btn-delete">
                             ' . csrf_field() . '
                             ' . method_field('DELETE') . '

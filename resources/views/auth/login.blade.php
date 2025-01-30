@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<section class="vh-100 p-0" style="background: url('{{ asset('iconos/fondo.jpg') }}') no-repeat center center fixed; background-size: cover; color: white;">
+<section class="vh-100 p-0" style="background: url('{{ asset('iconos/banner.jpg') }}') no-repeat center center fixed; background-size: cover; color: white;">
 
   <div class="container-fluid">
     <div class="row min-vh-100 d-flex justify-content-center align-items-center">
