@@ -46,8 +46,13 @@
                 </div>
 
                 <!-- Submit Button -->
-                <div class="pt-1 mb-4 d-flex justify-content-center">
+                <div class="pt-1 mb-3 d-flex justify-content-center">
                   <button class="btn btn-primary w-100" type="submit">Ingresar</button>
+                </div>
+
+                <!-- Forgot Password Link -->
+                <div class="text-center">
+                  <a href="{{ route('password.request') }}" class="text-primary">¿Olvidaste tu contraseña?</a>
                 </div>
 
               </form>
