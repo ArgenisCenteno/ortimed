@@ -51,9 +51,7 @@
                 </div>
 
                 <!-- Forgot Password Link -->
-                <div class="text-center">
-                  <a href="{{ route('password.request') }}" class="text-primary">¿Olvidaste tu contraseña?</a>
-                </div>
+               
 
               </form>
             </div>

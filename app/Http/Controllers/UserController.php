@@ -86,8 +86,7 @@ class UserController extends Controller
         // Validar los datos del formulario
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8',
+            'email' => 'required|string|email|max:255|unique:users', 
             'dni' => 'required|string|max:20',
             'sector' => 'nullable|string|max:100',
             'calle' => 'nullable|string|max:100',
@@ -96,11 +95,13 @@ class UserController extends Controller
             'status' => 'required|string|in:Activo,Inactivo',
         ]);
 
+        $password = $request->password ?? '12345678';
+
         // Crear el usuario
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' =>  Hash::make($request->password), // Encriptar la contraseña
+            'password' =>  Hash::make(  $password), // Encriptar la contraseña
             'dni' => $request->dni,
             'sector' => $request->sector,
             'calle' => $request->calle,
