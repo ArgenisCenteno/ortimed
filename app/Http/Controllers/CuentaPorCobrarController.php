@@ -8,6 +8,7 @@ use App\Models\Mesa;
 use App\Models\Movimiento;
 use App\Models\Pago;
 use App\Models\Recibo;
+use App\Models\Tasa;
 use App\Models\Transaccion;
 use App\Models\Venta;
 use Auth;
@@ -107,8 +108,37 @@ class CuentaPorCobrarController extends Controller
     public function show($id)
     {
         $cuenta = CuentaPorCobrar::findOrFail($id);
-        $cajas = Caja::all();
-        return view('cuentas-por-cobrar.show', compact('cuenta', 'cajas'));
+        $cajas = Caja::all();  
+
+        function isConnected()
+        {
+            $connected = @fsockopen("www.google.com", 80); // Intenta conectar al puerto 80 de Google
+            if ($connected) {
+                fclose($connected);
+                return true; // Hay conexión
+            }
+            return false; // No hay conexión
+        }
+
+        if (isConnected()) {
+            $response = file_get_contents("https://ve.dolarapi.com/v1/dolares/oficial");
+          
+        } else {
+             
+            $response = false;
+        }
+ 
+
+
+        // dd();
+        if ($response) {
+            $dato = json_decode($response);
+            $dollar = $dato->promedio;
+        } else {
+            $tasa = Tasa::where('name', 'DOLLAR')->where('status', 'Activo')->first();
+            $dollar = $tasa->valor;
+        }
+        return view('cuentas-por-cobrar.show', compact('cuenta', 'cajas', 'dollar'));
     }
 
     // Método para actualizar una cuenta por cobrar

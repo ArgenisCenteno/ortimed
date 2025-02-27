@@ -129,7 +129,7 @@
                                                     <div data-mdb-input-init class="form-outline form-white">
                                                         <input type="text" id="typeText"
                                                             class="form-control form-control-lg"
-                                                            value="{{ $venta->pago->status }}" readonly
+                                                            value="{{ $venta->pago->status ?? 'NO PAGADO' }}" readonly
                                                             placeholder="Estado del Pago" size="1" />
                                                         <label class="form-label" for="typeText">Estado del Pago</label>
                                                     </div>
@@ -146,7 +146,7 @@
 
 
                                         <hr class="my-4">
-
+                                        @if(isset($venta->pago))
                                         <div class="d-flex justify-content-between">
                                             <p class="mb-2">Subtotal</p>
                                             <p class="mb-2">${{ number_format($venta->pago->monto_neto, 2) }}</p>
@@ -166,6 +166,7 @@
                                             <p class="mb-2">Total(BS)</p>
                                             <p class="mb-2">${{ number_format($venta->pago->tasa_dolar * $venta->pago->monto_total, 2) }}</p>
                                         </div>
+                                        @endif
                                     </div>
                                 </div>
 

@@ -35,9 +35,19 @@ class Venta extends Model
     {
         return $this->belongsTo(User::class, 'vendedor_id');
     }
+    public function cuentaPorCobrar()
+    {
+        return $this->belongsTo(CuentaPorCobrar::class, 'venta_id');
+    }
 
     public function detalleVentas()
     {
         return $this->hasMany(DetalleVenta::class, 'id_venta');
     }
+
+    public function detalles()
+{
+    return $this->hasMany(DetalleVenta::class, 'id_venta');
+}
+
 }

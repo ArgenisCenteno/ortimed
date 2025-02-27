@@ -78,6 +78,7 @@ Route::get('/pagos/export', [PagoController::class, 'export'])->name('pagos.expo
 /* VENTAS */
 Route::get('/ventas/export', [VentaController::class, 'export'])->name('ventas.export');
 Route::resource('mesas', MesaController::class);
+Route::put('/actualizar-venta/{venta}', [VentaController::class, 'actualizarVenta'])->name('ventas.actualizar');
 
 Route::resource('ventas', App\Http\Controllers\VentaController::class);
 

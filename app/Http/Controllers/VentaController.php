@@ -144,12 +144,12 @@ class VentaController extends Controller
 
         if (isConnected()) {
             $response = file_get_contents("https://ve.dolarapi.com/v1/dolares/oficial");
-          
+
         } else {
-             
+
             $response = false;
         }
- 
+
 
 
         // dd();
@@ -160,7 +160,7 @@ class VentaController extends Controller
             $tasa = Tasa::where('name', 'DOLLAR')->where('status', 'Activo')->first();
             $dollar = $tasa->valor;
         }
-       
+
         $users = User::pluck('name', 'id');
         $cajas = Caja::all();
         $mesas = Mesa::where('estado', 'Disponible')->get();
@@ -169,7 +169,7 @@ class VentaController extends Controller
 
     public function datatableProductoVenta(Request $request)
     {
-        if ($request->ajax()) {  
+        if ($request->ajax()) {
             $productos = Producto::with('subCategoria', 'imagenes')->get(); // Cargar la relación subCategoria
 
             return DataTables::of($productos)
@@ -488,4 +488,87 @@ class VentaController extends Controller
 
         return redirect()->route('cuentas-por-cobrar.show', $deuda->id);
     }
+
+    public function actualizarVenta(Request $request, $ventaId)
+    {
+        $venta = Venta::findOrFail($ventaId);
+        // dd($venta);
+        $productos = json_decode($request->productos, true);
+        $metodos = json_decode($request->metodos_pago, true);
+
+        // Obtener detalles actuales de la venta
+        $detallesExistentes = $venta->detalles->keyBy('id_producto');
+
+        // Recalcular totales
+        $totalNeto = 0;
+        $montoTotal = 0;
+        $impuestosTotal = 0;
+
+       
+        foreach ($productos as $producto) {
+            $idProducto = $producto['id'];
+            $anterior = 0;
+            $cantidadNueva = $producto['cantidad'];
+            $precio = $producto['precio'];
+            $productoModel = Producto::find($idProducto);
+            // Calcular impuestos
+            $impuesto = ($producto['aplicaIva'] == 1) ? ($precio * 0.16) * ( $cantidadNueva + $anterior) : 0;
+            $subtotal = $precio * ( $cantidadNueva + $anterior);
+           
+            $totalNeto += $subtotal;
+            $montoTotal += $subtotal + $impuesto;
+            $impuestosTotal += $impuesto;
+
+            // Verificar si el producto ya está en los detalles
+            if ($detallesExistentes->has($idProducto)) {
+                $detalleVenta = $detallesExistentes[$idProducto];
+
+                // Revertir stock anterior antes de actualizar
+
+                if ($productoModel) {
+                    $anterior += $detalleVenta->cantidad;
+                    $productoModel->cantidad += $detalleVenta->cantidad; // Revertir stock anterior
+                }
+
+
+                // Actualizar detalle
+                $detalleVenta->cantidad = $cantidadNueva + $anterior;
+                $detalleVenta->precio_producto = $precio;
+                $detalleVenta->neto = $subtotal;
+                $detalleVenta->impuesto = $impuesto;
+                $detalleVenta->save();
+
+
+            } else {
+                // Agregar nuevo detalle si no existía antes
+                $detalleVenta = new DetalleVenta();
+                $detalleVenta->id_producto = $idProducto;
+                $detalleVenta->precio_producto = $precio;
+                $detalleVenta->cantidad = $cantidadNueva;
+                $detalleVenta->neto = $subtotal;
+                $detalleVenta->impuesto = $impuesto;
+                $detalleVenta->id_venta = $venta->id;
+                $detalleVenta->save();
+            }
+
+            // Restar nueva cantidad al stock
+            if ($productoModel) {
+                $productoModel->cantidad -= $cantidadNueva + $anterior;
+                $productoModel->save();
+            }
+        }
+
+        $cuenta = CuentaPorCobrar::where('venta_id', $venta->id)->first();
+       
+        $cuenta->monto += $montoTotal;
+        $cuenta->save();
+
+        // Actualizar la venta
+        $venta->monto_total += $montoTotal;
+        $venta->save();
+        
+        Alert::success('¡Éxito!', 'Venta actualizada exitosamente')->showConfirmButton('Aceptar', 'rgba(79, 59, 228, 1)');
+        return redirect()->back();
+    }
+
 }
